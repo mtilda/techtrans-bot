@@ -99,7 +99,10 @@ func (bot *Bot) ReadCredentials() error {
 		return err
 	}
 
-	json.Unmarshal(credByte, &bot.credentials)
+	err = json.Unmarshal(credByte, &bot.credentials)
+	if nil != err {
+		return err
+	}
 
 	return nil
 }

@@ -47,7 +47,7 @@ type Bot struct {
 // Connect the bot to the Twitch IRC server
 // Retry until successful, with exponential backoff
 func (bot *Bot) Connect() {
-	Inform("Connecting to %s...", bot.Server)
+	Inform("Attempting to connect with %s...", bot.Server)
 
 	delay := 1
 	for {

@@ -58,6 +58,19 @@ func (bot *Bot) Start() {
 
 	bot.Connect()
 	bot.JoinChannel()
+
+	tp := textproto.NewReader(bufio.NewReader(bot.connection))
+	for {
+		line, err := tp.ReadLine()
+		if nil != err {
+
+			bot.Disconnect()
+
+			return
+		}
+
+		Inform(line)
+	}
 }
 
 // Connect the bot to the Twitch IRC server

@@ -51,8 +51,8 @@ type Bot struct {
 func (bot *Bot) Start() {
 	err := bot.ReadCredentials()
 	if nil != err {
-		Error(err.Error())
-		Inform("Aborting...")
+		Error(err)
+		Inform("Failed to read bot credentials. Aborting.")
 		return
 	}
 
@@ -63,9 +63,9 @@ func (bot *Bot) Start() {
 	for {
 		line, err := tp.ReadLine()
 		if nil != err {
-
+			Error(err)
+			Inform("Failed to read buffer. Disconnecting from IRC server.")
 			bot.Disconnect()
-
 			return
 		}
 
@@ -83,13 +83,15 @@ func (bot *Bot) Connect() {
 		// Make connection to Twitch IRC server
 		var err error
 		bot.connection, err = net.Dial("tcp", bot.Server+":"+bot.Port)
-		if err == nil {
-			break
+		if err != nil {
+			Error(err)
+			Inform("Connection to %s failed, retrying in %d seconds...", bot.Server, delay)
+			time.Sleep(time.Duration(delay) * time.Second)
+			delay *= 2
+			continue
 		}
 
-		Error("Failed to connect to %s, retrying in %d seconds...", bot.Server, delay)
-		time.Sleep(time.Duration(delay) * time.Second)
-		delay *= 2
+		break
 	}
 
 	Inform("Connected to %s!", bot.Server)

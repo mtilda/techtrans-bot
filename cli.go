@@ -28,13 +28,13 @@ func Warn(message string, args ...interface{}) {
 }
 
 // Print a formatted error to the console with a timestamp
-func Error(message string, args ...interface{}) {
+func Error(err error) {
 	dt := time.Now()
 
 	Printfc("\033[36m%s \033[35m> ", dt.Format(time.RFC1123Z))
 
 	// fg: bold bright red, bg: none
-	Printfc("\033[1;31mERROR: "+message+"\r\n", args...)
+	Printfc("\033[1;31mERROR: " + err.Error() + "\r\n")
 }
 
 // Print a formatted message and reset color

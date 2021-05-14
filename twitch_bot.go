@@ -1,3 +1,5 @@
+// Provide tools for connecting to and interacting with Twitch IRC
+
 package main
 
 import (

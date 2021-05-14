@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-type OAuthCred struct {
+type OAuthCredentials struct {
 	// The bot account's OAuth password
 	Password string `json:"password"`
 
@@ -22,11 +22,11 @@ type Bot struct {
 	// Name the bot goes by
 	Name string
 
-	// Port of the IRC server
-	Port string
-
 	// Path to a json file containing the bot's OAuth credentials
 	CredentialsPath string
+
+	// Port of the IRC server
+	Port string
 
 	// The domain of the IRC server
 	Server string
@@ -34,7 +34,7 @@ type Bot struct {
 	/* Private */
 
 	// Twitch OAuth credentials
-	credentials *OAuthCred
+	credentials *OAuthCredentials
 
 	// Reference to the IRC connection
 	connection net.Conn
@@ -62,23 +62,21 @@ func (bot *Bot) Connect() {
 	fmt.Printf("Connected to %s!\n", bot.Server)
 }
 
-// Reads from the private credentials file and stores the data in the bot's Credentials field
+// Read from the private credentials json file
+// Stores the data in the bot's Credentials field
 func (bot *Bot) ReadCredentials() error {
+	bot.credentials = &OAuthCredentials{}
 
 	credJSON, err := os.Open(bot.CredentialsPath)
 	if nil != err {
 		return err
 	}
 
-	bot.credentials = &OAuthCred{}
-
 	credByte, err := ioutil.ReadAll(credJSON)
 	if nil != err {
 		return err
 	}
 
-	// Unmarshal credByte into bot.Credentials
-	// Case and underscore insensitive
 	json.Unmarshal(credByte, &bot.credentials)
 
 	return nil

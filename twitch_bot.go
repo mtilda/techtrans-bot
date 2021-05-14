@@ -29,8 +29,11 @@ type Bot struct {
 	// Port of the IRC server
 	Port string
 
-	// The domain of the IRC server
+	// Domain of the IRC server
 	Server string
+
+	// Name of channel to connect to
+	Channel string
 
 	/* Private */
 
@@ -61,6 +64,18 @@ func (bot *Bot) Connect() {
 	}
 
 	Inform("Connected to %s!", bot.Server)
+}
+
+// Make the bot join its pre-specified channel
+// Will panic if connection is not established
+func (bot *Bot) JoinChannel() {
+	Inform("Attempting to join #%s...", bot.Channel)
+
+	bot.connection.Write([]byte("NICK " + bot.Name + "\r\n"))
+	bot.connection.Write([]byte("PASS " + bot.credentials.Password + "\r\n"))
+	bot.connection.Write([]byte("JOIN #" + bot.Channel + "\r\n"))
+
+	Inform("Joined #%s as @%s!", bot.Channel, bot.Name)
 }
 
 // Read from the private credentials json file

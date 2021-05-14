@@ -1,3 +1,5 @@
+// Provide tools to communicate with the user via CLI
+
 package main
 
 import (
@@ -5,26 +7,32 @@ import (
 	"time"
 )
 
+// Print formatted information to the console with a timestamp
 func Inform(message string, args ...interface{}) {
 	dt := time.Now()
 
 	fmt.Printf("\033[36m%s \033[35m> ", dt.Format(time.RFC1123Z))
 
-	fmt.Printf("\033[0m"+message+"\r\n", args...)
+	// fg: white, bg: none
+	fmt.Printf("\033[0m"+message+"\r\n\033[0m", args...)
 }
 
+// Print a formatted warning to the console with a timestamp
 func Warn(message string, args ...interface{}) {
 	dt := time.Now()
 
 	fmt.Printf("\033[36m%s \033[35m> ", dt.Format(time.RFC1123Z))
 
-	fmt.Printf("\033[93mWARNING: "+message+"\r\n", args...)
+	// fg: bold bright yellow, bg: none
+	fmt.Printf("\033[1;33mWARNING: "+message+"\r\n\033[0m", args...)
 }
 
+// Print a formatted error to the console with a timestamp
 func Error(message string, args ...interface{}) {
 	dt := time.Now()
 
 	fmt.Printf("\033[36m%s \033[35m> ", dt.Format(time.RFC1123Z))
 
-	fmt.Printf("\033[1;31mERROR: "+message+"\r\n", args...)
+	// fg: bold bright red, bg: none
+	fmt.Printf("\033[1;31mERROR: "+message+"\r\n\033[0m", args...)
 }

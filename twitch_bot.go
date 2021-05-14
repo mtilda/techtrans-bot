@@ -66,6 +66,12 @@ func (bot *Bot) Connect() {
 	Inform("Connected to %s!", bot.Server)
 }
 
+// Disconnect bot from the Twitch IRC server
+func (bot *Bot) Disconnect() {
+	bot.connection.Close()
+	Inform("Closed connection with %s!", bot.Server)
+}
+
 // Make the bot join its pre-specified channel
 // Will panic if connection is not established
 func (bot *Bot) JoinChannel() {

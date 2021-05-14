@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net"
 	"os"
+	"time"
 )
 
 type OAuthCred struct {
@@ -39,11 +40,12 @@ type Bot struct {
 	connection net.Conn
 }
 
-// Connects the bot to the Twitch IRC server
-// Retry until successful
+// Connect the bot to the Twitch IRC server
+// Retry until successful, with exponential backoff
 func (bot *Bot) Connect() {
 	fmt.Printf("Connecting to %s...\n", bot.Server)
 
+	delay := 1
 	for {
 		// Make connection to Twitch IRC server
 		var err error
@@ -51,6 +53,10 @@ func (bot *Bot) Connect() {
 		if err == nil {
 			break
 		}
+
+		fmt.Printf("Failed to connect to %s, retrying in %d seconds...\n", bot.Server, delay)
+		time.Sleep(time.Duration(delay) * time.Second)
+		delay *= 2
 	}
 
 	fmt.Printf("Connected to %s!\n", bot.Server)

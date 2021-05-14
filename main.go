@@ -10,7 +10,5 @@ func main() {
 		Channel:         "twitch",
 	}
 
-	bot.ReadCredentials()
-	bot.Connect()
-	bot.JoinChannel()
+	bot.Start()
 }

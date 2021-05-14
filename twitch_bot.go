@@ -3,9 +3,11 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"io/ioutil"
 	"net"
+	"net/textproto"
 	"os"
 	"time"
 )
@@ -42,6 +44,20 @@ type Bot struct {
 
 	// Reference to the IRC connection
 	connection net.Conn
+}
+
+// Start bot
+// Connect to twitch, join channel, and handle chat
+func (bot *Bot) Start() {
+	err := bot.ReadCredentials()
+	if nil != err {
+		Error(err.Error())
+		Inform("Aborting...")
+		return
+	}
+
+	bot.Connect()
+	bot.JoinChannel()
 }
 
 // Connect the bot to the Twitch IRC server

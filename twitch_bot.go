@@ -1,7 +1,10 @@
 package main
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"net"
+	"os"
 )
 
 type OAuthCred struct {
@@ -33,4 +36,26 @@ type Bot struct {
 
 	// Reference to the IRC connection
 	connection net.Conn
+}
+
+// Reads from the private credentials file and stores the data in the bot's Credentials field.
+func (bot *Bot) ReadCredentials() error {
+
+	credJSON, err := os.Open(bot.CredentialsPath)
+	if nil != err {
+		return err
+	}
+
+	bot.credentials = &OAuthCred{}
+
+	credByte, err := ioutil.ReadAll(credJSON)
+	if nil != err {
+		return err
+	}
+
+	// Unmarshal credByte into bot.Credentials
+	// Case and underscore insensitive
+	json.Unmarshal(credByte, &bot.credentials)
+
+	return nil
 }

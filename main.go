@@ -1,9 +1,14 @@
 package main
 
-import (
-	"fmt"
-)
-
 func main() {
-	fmt.Println("Hello World!")
+
+	bot := Bot{
+		Name:            "techtrans",
+		CredentialsPath: "./credentials.json",
+		Port:            "6667",
+		Server:          "irc.chat.twitch.tv",
+		Channel:         "twitch",
+	}
+
+	bot.Start()
 }

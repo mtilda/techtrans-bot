@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net"
 	"os"
@@ -43,7 +42,7 @@ type Bot struct {
 // Connect the bot to the Twitch IRC server
 // Retry until successful, with exponential backoff
 func (bot *Bot) Connect() {
-	fmt.Printf("Connecting to %s...\n", bot.Server)
+	Inform("Connecting to %s...", bot.Server)
 
 	delay := 1
 	for {
@@ -54,12 +53,12 @@ func (bot *Bot) Connect() {
 			break
 		}
 
-		fmt.Printf("Failed to connect to %s, retrying in %d seconds...\n", bot.Server, delay)
+		Error("Failed to connect to %s, retrying in %d seconds...", bot.Server, delay)
 		time.Sleep(time.Duration(delay) * time.Second)
 		delay *= 2
 	}
 
-	fmt.Printf("Connected to %s!\n", bot.Server)
+	Inform("Connected to %s!", bot.Server)
 }
 
 // Read from the private credentials json file

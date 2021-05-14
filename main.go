@@ -1,9 +1,5 @@
 package main
 
-import (
-	"fmt"
-)
-
 func main() {
 
 	bot := Bot{
@@ -14,6 +10,5 @@ func main() {
 	}
 
 	bot.ReadCredentials()
-
-	fmt.Println(bot.credentials)
+	bot.Connect()
 }

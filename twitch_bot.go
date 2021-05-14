@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net"
 	"os"
@@ -38,7 +39,24 @@ type Bot struct {
 	connection net.Conn
 }
 
-// Reads from the private credentials file and stores the data in the bot's Credentials field.
+// Connects the bot to the Twitch IRC server
+// Retry until successful
+func (bot *Bot) Connect() {
+	fmt.Printf("Connecting to %s...\n", bot.Server)
+
+	for {
+		// Make connection to Twitch IRC server
+		var err error
+		bot.connection, err = net.Dial("tcp", bot.Server+":"+bot.Port)
+		if err == nil {
+			break
+		}
+	}
+
+	fmt.Printf("Connected to %s!\n", bot.Server)
+}
+
+// Reads from the private credentials file and stores the data in the bot's Credentials field
 func (bot *Bot) ReadCredentials() error {
 
 	credJSON, err := os.Open(bot.CredentialsPath)

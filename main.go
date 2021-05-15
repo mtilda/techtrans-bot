@@ -3,7 +3,7 @@ package main
 func main() {
 
 	bot := Bot{
-		Name:            "techtrans",
+		Nick:            "techtrans",
 		CredentialsPath: "./credentials.json",
 		Port:            "6667",
 		Server:          "irc.chat.twitch.tv",

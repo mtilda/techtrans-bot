@@ -22,8 +22,8 @@ type OAuthCredentials struct {
 }
 
 type Bot struct {
-	// Name the bot goes by
-	Name string
+	// Twitch username (login name) in lowercase
+	Nick string
 
 	// Path to a json file containing the bot's OAuth credentials
 	CredentialsPath string
@@ -109,10 +109,10 @@ func (bot *Bot) JoinChannel() {
 	Inform("Attempting to join #%s...", bot.Channel)
 
 	bot.connection.Write([]byte("PASS oauth:" + bot.credentials.Password + "\r\n"))
-	bot.connection.Write([]byte("NICK " + bot.Name + "\r\n"))
+	bot.connection.Write([]byte("NICK " + bot.Nick + "\r\n"))
 	bot.connection.Write([]byte("JOIN #" + bot.Channel + "\r\n"))
 
-	Inform("Joined #%s as @%s!", bot.Channel, bot.Name)
+	Inform("Joined #%s as @%s!", bot.Channel, bot.Nick)
 }
 
 // Read from the private credentials json file

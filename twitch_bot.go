@@ -79,16 +79,35 @@ func (bot *Bot) Monitor() error {
 			return errors.New("Failed to read buffer")
 		}
 
-		HandleIRCLine(line)
+		formattedLine, err := bot.HandleIRCLine(line)
+		if err != nil {
+			Error(err)
+			return errors.New("Unable to parse IRC line: '" + line + "'")
+		}
+		if formattedLine != "" {
+			Inform(formattedLine)
+		}
 	}
 }
 
 // Parse a single IRC line
 // Check for commands
 // Format messages
-func HandleIRCLine(line string) {
+func (bot *Bot) HandleIRCLine(line string) (string, error) {
 	var formattedLine string
+
+	if strings.Contains(line, "PING :tmi.twitch.tv") {
+		_, err := bot.connection.Write([]byte("PONG :tmi.twitch.tv\r\n"))
+		if nil != err {
+			Error(err)
+			return "", errors.New("Unable to send 'PONG :tmi.twitch.tv'")
+		}
+
+		return "ping...pong", nil
+	}
+
 	lineSlice := strings.Split(line, " :")
+
 	if len(lineSlice) >= 1 {
 		user := strings.Split(lineSlice[0], " ")[0]
 		if strings.HasPrefix(user, ":") {
@@ -101,7 +120,7 @@ func HandleIRCLine(line string) {
 		formattedLine += strings.Join(lineSlice[1:], " :")
 	}
 
-	Inform(formattedLine)
+	return formattedLine, nil
 }
 
 		if nil != err {

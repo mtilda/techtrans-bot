@@ -110,6 +110,7 @@ func (bot *Bot) JoinChannel() {
 
 	bot.connection.Write([]byte("PASS oauth:" + bot.credentials.Password + "\r\n"))
 	bot.connection.Write([]byte("NICK " + bot.Nick + "\r\n"))
+	bot.connection.Write([]byte("CAP REQ :twitch.tv/commands\r\n")) // enable reading whispers
 	bot.connection.Write([]byte("JOIN #" + bot.Channel + "\r\n"))
 
 	Inform("Joined #%s as @%s!", bot.Channel, bot.Nick)

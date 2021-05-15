@@ -5,10 +5,12 @@ package main
 import (
 	"bufio"
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"net"
 	"net/textproto"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -57,11 +59,51 @@ func (bot *Bot) Start() {
 	}
 
 	bot.Connect()
+	defer bot.Disconnect()
+
 	bot.JoinChannel()
 
+	bot.Monitor()
+	if nil != err {
+		Error(err)
+	}
+}
+
+// Monitor the current IRC connection forever
+func (bot *Bot) Monitor() error {
 	tp := textproto.NewReader(bufio.NewReader(bot.connection))
 	for {
 		line, err := tp.ReadLine()
+		if err != nil {
+			Error(err)
+			return errors.New("Failed to read buffer")
+		}
+
+		HandleIRCLine(line)
+	}
+}
+
+// Parse a single IRC line
+// Check for commands
+// Format messages
+func HandleIRCLine(line string) {
+	var formattedLine string
+	lineSlice := strings.Split(line, " :")
+	if len(lineSlice) >= 1 {
+		user := strings.Split(lineSlice[0], " ")[0]
+		if strings.HasPrefix(user, ":") {
+			user = strings.Split(user, ":")[1]
+			user = strings.Split(user, "!")[0]
+			formattedLine += user + " : "
+		}
+	}
+	if len(lineSlice) >= 2 {
+		formattedLine += strings.Join(lineSlice[1:], " :")
+	}
+
+	Inform(formattedLine)
+}
+
 		if nil != err {
 			Error(err)
 			Inform("Failed to read buffer. Disconnecting from IRC server.")

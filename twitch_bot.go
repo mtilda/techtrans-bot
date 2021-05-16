@@ -123,15 +123,47 @@ func (bot *Bot) HandleIRCLine(line string) (string, error) {
 	return formattedLine, nil
 }
 
-		if nil != err {
-			Error(err)
-			Inform("Failed to read buffer. Disconnecting from IRC server.")
-			bot.Disconnect()
-			return
-		}
-
-		Inform(line)
+// Make the bot send a message to the chat channel
+func (bot *Bot) Say(message string) error {
+	if message == "" {
+		return errors.New("Message empty")
 	}
+
+	// check if message is too large for IRC
+	if len(message) > 512 {
+		return errors.New("Message exceeds 512 bytes")
+	}
+
+	_, err := bot.connection.Write([]byte("PRIVMSG #" + bot.Channel + " :" + message + "\r\n"))
+	if nil != err {
+		return err
+	}
+
+	Inform(bot.Nick + " : " + message)
+
+	return nil
+}
+
+// Make the bot send a whisper to a user
+// Bot must be verified in order for whispering to be allowed
+func (bot *Bot) Whisper(message string, recipient string) error {
+	if "" == message {
+		return errors.New("Message empty")
+	}
+
+	// check if message is too large for IRC
+	if len(message) > 512 {
+		return errors.New("Message exceeds 512 bytes")
+	}
+
+	_, err := bot.connection.Write([]byte("PRIVMSG #" + bot.Channel + " :/w " + recipient + " " + message + "\r\n"))
+	if nil != err {
+		return err
+	}
+
+	Inform(bot.Nick + " \033[35m<whisper> " + recipient + " : " + message)
+
+	return nil
 }
 
 // Connect the bot to the Twitch IRC server
@@ -160,6 +192,7 @@ func (bot *Bot) Connect() {
 
 // Disconnect bot from the Twitch IRC server
 func (bot *Bot) Disconnect() {
+	Inform("Disconnecting from IRC server.")
 	bot.connection.Close()
 	Inform("Closed connection with %s!", bot.Server)
 }

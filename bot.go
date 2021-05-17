@@ -55,10 +55,16 @@ func (bot *Bot) Chat(content string, sender string, isWhisper bool) error {
 	if content == "!tech" {
 		tech, err := FetchTech()
 		if err != nil {
-			Error(err)
-		} else {
-			bot.Say(tech)
+			return err
 		}
+
+		// if isWhisper {
+		// 	bot.Whisper(tech, sender)
+		// 	return nil
+		// }
+
+		bot.Say(tech)
+		return nil
 	}
 
 	return nil

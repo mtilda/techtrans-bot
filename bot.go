@@ -4,24 +4,12 @@ package main
 
 import (
 	"bufio"
-	"encoding/json"
 	"errors"
-	"io/ioutil"
 	"net"
 	"net/textproto"
-	"os"
 	"strings"
 	"time"
 )
-
-type OAuthCredentials struct {
-	// The bot account's OAuth password
-	Password string `json:"password"`
-
-	// The developer application client ID
-	// Used for API calls to Twitch
-	ClientID string `json:"client_id"`
-}
 
 type Bot struct {
 	// Twitch username (login name) in lowercase
@@ -42,7 +30,7 @@ type Bot struct {
 	/* Private */
 
 	// Twitch OAuth credentials
-	credentials *OAuthCredentials
+	credentials OAuthCred
 
 	// Reference to the IRC connection
 	connection net.Conn
@@ -51,7 +39,7 @@ type Bot struct {
 // Start bot
 // Connect to twitch, join channel, and handle chat
 func (bot *Bot) Start() {
-	err := bot.ReadCredentials()
+	err := bot.credentials.Read(bot.CredentialsPath)
 	if nil != err {
 		Error(err)
 		Inform("Failed to read bot credentials. Aborting.")
@@ -208,27 +196,4 @@ func (bot *Bot) JoinChannel() {
 	bot.connection.Write([]byte("JOIN #" + bot.Channel + "\r\n"))
 
 	Inform("Joined #%s as @%s!", bot.Channel, bot.Nick)
-}
-
-// Read from the private credentials json file
-// Stores the data in the bot's Credentials field
-func (bot *Bot) ReadCredentials() error {
-	bot.credentials = &OAuthCredentials{}
-
-	credJSON, err := os.Open(bot.CredentialsPath)
-	if nil != err {
-		return err
-	}
-
-	credByte, err := ioutil.ReadAll(credJSON)
-	if nil != err {
-		return err
-	}
-
-	err = json.Unmarshal(credByte, &bot.credentials)
-	if nil != err {
-		return err
-	}
-
-	return nil
 }

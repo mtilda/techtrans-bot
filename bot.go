@@ -52,7 +52,9 @@ func (bot *Bot) Start() {
 /* Respond to incoming messages
  */
 func (bot *Bot) Chat(content string, sender string, isWhisper bool) error {
-	// bot.Say("Hello World")
+	if content == "!tech" {
+		bot.Say("oh wow!")
+	}
 
 	return nil
 }

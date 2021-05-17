@@ -8,36 +8,28 @@ import (
 )
 
 // Print formatted information to the console with a timestamp
-func Inform(message string, args ...interface{}) {
-	dt := time.Now()
-
-	Printfc("\033[36m%s \033[35m> ", dt.Format(time.RFC1123Z))
-
+func Inform(message string, args ...interface{}) string {
 	// fg: white, bg: none
-	Printfc("\033[0m"+message+"\r\n", args...)
+	return PrintTimestamp("\033[0m"+message, args...)
 }
 
 // Print a formatted warning to the console with a timestamp
-func Warn(message string, args ...interface{}) {
-	dt := time.Now()
-
-	Printfc("\033[36m%s \033[35m> ", dt.Format(time.RFC1123Z))
-
+func Warn(message string, args ...interface{}) string {
 	// fg: bold bright yellow, bg: none
-	Printfc("\033[1;33mWARNING: "+message+"\r\n", args...)
+	return PrintTimestamp("\033[1;33mWARNING: "+message, args...)
 }
 
 // Print a formatted error to the console with a timestamp
-func Error(err error) {
-	dt := time.Now()
-
-	Printfc("\033[36m%s \033[35m> ", dt.Format(time.RFC1123Z))
-
+func Error(err error) string {
 	// fg: bold bright red, bg: none
-	Printfc("\033[1;31mERROR: " + err.Error() + "\r\n")
+	return PrintTimestamp("\033[1;31mERROR: " + err.Error())
 }
 
-// Print a formatted message and reset color
-func Printfc(message string, args ...interface{}) {
-	fmt.Printf(message+"\033[0m", args...)
+// Print a formatted message with a timestamp
+// Reset color and start a new line
+func PrintTimestamp(message string, args ...interface{}) string {
+	dt := time.Now()
+	formattedString := fmt.Sprintf("\033[36m"+dt.Format(time.StampMicro)+" \033[35m~ "+message+"\033[0m\r\n", args...)
+	fmt.Print(formattedString)
+	return formattedString
 }

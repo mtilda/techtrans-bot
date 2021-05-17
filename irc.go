@@ -13,7 +13,7 @@ import (
 
 type IRC struct {
 	// Address of IRC server
-	address string
+	Address string
 
 	// Reference to server connection
 	conn net.Conn

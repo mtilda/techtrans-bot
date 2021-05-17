@@ -16,7 +16,7 @@ type Body struct {
 	Results [][]string `json:"results"`
 	Count   int        `json:"count"`
 	Total   int        `json:"total"`
-	Perpage int        `json:"perpage"`
+	PerPage int        `json:"perpage"`
 	Page    int        `json:"page"`
 }
 
@@ -25,7 +25,7 @@ type Body struct {
 */
 func FetchTech() (string, error) {
 
-	res, err := http.Get("https://api.nasa.gov/techtransfer/patent/?wing&api_key=DEMO_KEY")
+	res, err := http.Get("https://api.nasa.gov/techtransfer/patent/?engine&api_key=DEMO_KEY")
 	if err != nil {
 		Error(err)
 	} else {
@@ -49,7 +49,7 @@ func FetchTech() (string, error) {
 
 		index := rand.Intn(body.Count)
 
-		return removeTags(body.Results[index][2]) + "\n" + body.Results[index][10], nil
+		return removeTags(body.Results[index][2]), nil // + " " + body.Results[index][10], nil
 	}
 
 	return "", errors.New("Unable to fetch tech")

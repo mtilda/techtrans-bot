@@ -6,12 +6,16 @@ import (
 	"os"
 )
 
+// Twitch IRC OAuth Credentials
 type OAuthCred struct {
 	Nick     string `json:"nick"`
 	Password string `json:"password"`
 }
 
-func (cred *OAuthCred) Read(sourcePath string) error {
+/* Read secrete credentials json file
+   Unmarshal values into destinationCred
+*/
+func (destinationCred *OAuthCred) Read(sourcePath string) error {
 	credJSON, err := os.Open(sourcePath)
 	if nil != err {
 		return err
@@ -22,7 +26,7 @@ func (cred *OAuthCred) Read(sourcePath string) error {
 		return err
 	}
 
-	err = json.Unmarshal(credByte, &cred)
+	err = json.Unmarshal(credByte, &destinationCred)
 	if nil != err {
 		return err
 	}

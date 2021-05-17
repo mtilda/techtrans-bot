@@ -33,12 +33,12 @@ Example output:
     ./techtrans-bot
     ```
 ---
-### [Credentials](https://dev.twitch.tv/console/apps)
+### Credentials
 
 Create a `credentials.json` file in the root with the following structure. Fill in the values with the appropriate data. Password should contain the OAuth access token, which you can obtain here: https://twitchapps.com/tmi/
 ```
 {
-  "password": "",
-  "client_id": ""
+  "nick": "",
+  "password": ""
 }
 ```

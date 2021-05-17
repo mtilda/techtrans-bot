@@ -12,22 +12,18 @@ import (
 )
 
 type Bot struct {
-	// Twitch username (login name) in lowercase
-	Nick string
-
-	// Path to a json file containing the bot's OAuth credentials
-	CredentialsPath string
-
-	// Port of the IRC server
-	Port string
 
 	// Domain of the IRC server
 	Server string
 
+	// Port of the IRC server
+	Port string
+
 	// Name of channel to connect to
 	Channel string
 
-	/* Private */
+	// Path to a json file containing the bot's OAuth credentials
+	CredentialsPath string
 
 	// Twitch OAuth credentials
 	Credentials OAuthCred
@@ -127,7 +123,7 @@ func (bot *Bot) Say(message string) error {
 		return err
 	}
 
-	Inform(bot.Nick + " : " + message)
+	Inform(bot.Credentials.Nick + " : " + message)
 
 	return nil
 }
@@ -149,7 +145,7 @@ func (bot *Bot) Whisper(message string, recipient string) error {
 		return err
 	}
 
-	Inform(bot.Nick + " \033[35m<whisper> " + recipient + " : " + message)
+	Inform(bot.Credentials.Nick + " \033[35m<whisper> " + recipient + " : " + message)
 
 	return nil
 }
@@ -191,9 +187,9 @@ func (bot *Bot) JoinChannel() {
 	Inform("Attempting to join #%s...", bot.Channel)
 
 	bot.connection.Write([]byte("PASS oauth:" + bot.Credentials.Password + "\r\n"))
-	bot.connection.Write([]byte("NICK " + bot.Nick + "\r\n"))
+	bot.connection.Write([]byte("NICK " + bot.Credentials.Nick + "\r\n"))
 	bot.connection.Write([]byte("CAP REQ :twitch.tv/commands\r\n")) // enable reading whispers
 	bot.connection.Write([]byte("JOIN #" + bot.Channel + "\r\n"))
 
-	Inform("Joined #%s as @%s!", bot.Channel, bot.Nick)
+	Inform("Joined #%s as @%s!", bot.Channel, bot.Credentials.Nick)
 }

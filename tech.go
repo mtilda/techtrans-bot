@@ -1,7 +1,10 @@
+// Fetch and manipulate data from NASA's Technology Transfer API
+
 package main
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -17,7 +20,10 @@ type Body struct {
 	Page    int        `json:"page"`
 }
 
-func FetchTech() string {
+/* Fetch a random technology
+   Return the title and image URL
+*/
+func FetchTech() (string, error) {
 
 	res, err := http.Get("https://api.nasa.gov/techtransfer/patent/?wing&api_key=DEMO_KEY")
 	if err != nil {
@@ -43,11 +49,14 @@ func FetchTech() string {
 
 		index := rand.Intn(body.Count)
 
-		return removeTags(body.Results[index][2]) + "\n" + body.Results[index][10]
+		return removeTags(body.Results[index][2]) + "\n" + body.Results[index][10], nil
 	}
-	return ""
+
+	return "", errors.New("Unable to fetch tech")
 }
 
+/* Remove all substrings that look like HTML tags
+ */
 func removeTags(input string) string {
 	re := regexp.MustCompile("<[^>]*>")
 	return strings.Join(re.Split(input, -1), "")

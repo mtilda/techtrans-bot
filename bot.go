@@ -30,7 +30,7 @@ type Bot struct {
 	/* Private */
 
 	// Twitch OAuth credentials
-	credentials OAuthCred
+	Credentials OAuthCred
 
 	// Reference to the IRC connection
 	connection net.Conn
@@ -39,7 +39,7 @@ type Bot struct {
 // Start bot
 // Connect to twitch, join channel, and handle chat
 func (bot *Bot) Start() {
-	err := bot.credentials.Read(bot.CredentialsPath)
+	err := bot.Credentials.Read(bot.CredentialsPath)
 	if nil != err {
 		Error(err)
 		Inform("Failed to read bot credentials. Aborting.")
@@ -190,7 +190,7 @@ func (bot *Bot) Disconnect() {
 func (bot *Bot) JoinChannel() {
 	Inform("Attempting to join #%s...", bot.Channel)
 
-	bot.connection.Write([]byte("PASS oauth:" + bot.credentials.Password + "\r\n"))
+	bot.connection.Write([]byte("PASS oauth:" + bot.Credentials.Password + "\r\n"))
 	bot.connection.Write([]byte("NICK " + bot.Nick + "\r\n"))
 	bot.connection.Write([]byte("CAP REQ :twitch.tv/commands\r\n")) // enable reading whispers
 	bot.connection.Write([]byte("JOIN #" + bot.Channel + "\r\n"))

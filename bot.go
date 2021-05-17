@@ -53,7 +53,7 @@ func (bot *Bot) Start() {
  */
 func (bot *Bot) Chat(content string, sender string, isWhisper bool) error {
 	if content == "!tech" {
-		bot.Say("oh wow!")
+		Inform(FetchTech())
 	}
 
 	return nil

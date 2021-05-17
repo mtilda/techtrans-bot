@@ -36,12 +36,14 @@ func FetchTech() string {
 		if nil != err {
 			// always throws the following error:
 			// json: cannot unmarshal number into Go struct field Body.results of type string
+			// I think because it si unmarshalling an array of mixed data types.
+			// We do not need the one that is erroring out.
 			// Error(err)
 		}
 
 		index := rand.Intn(body.Count)
 
-		return removeTags(body.Results[index][2])
+		return removeTags(body.Results[index][2]) + "\n" + body.Results[index][10]
 	}
 	return ""
 }

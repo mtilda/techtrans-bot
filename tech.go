@@ -29,7 +29,7 @@ func FetchTech() (string, error) {
 	if err != nil {
 		Error(err)
 	} else {
-		data, _ := ioutil.ReadAll(res.Body)
+		data, err := ioutil.ReadAll(res.Body)
 		if nil != err {
 			Error(err)
 		}
